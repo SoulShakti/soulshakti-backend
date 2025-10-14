@@ -81,11 +81,13 @@ app.post('/api/payment/create-order', async (req, res) => {
 
     const order = await razorpay.orders.create(options);
 
-    res.json({
+     res.json({
       success: true,
-      orderId: order.id,
-      amount: order.amount,
-      currency: order.currency,
+      order: {
+        id: order.id,
+        amount: order.amount,
+        currency: order.currency
+      },
       key: process.env.RAZORPAY_KEY_ID
     });
   } catch (error) {
