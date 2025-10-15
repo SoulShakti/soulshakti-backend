@@ -149,13 +149,12 @@ app.post('/api/booking/create', async (req, res) => {
     // Generate booking reference
     const bookingRef = `SSW-${Date.now().toString(36).toUpperCase()}`;
 
-    // Send booking confirmation email
-   await sendBookingConfirmationEmail({
-      ...bookingData,
-      bookingRef: bookingRef,
-      paymentStatus: 'Pay After Session'
-    });
-
+  // Send booking confirmation email
+    // await sendBookingConfirmationEmail({
+    //   ...bookingData,
+    //   bookingRef: bookingRef,
+    //   paymentStatus: 'Pay After Session'
+    // });
     res.json({
       success: true,
       bookingRef: bookingRef,
