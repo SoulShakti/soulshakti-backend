@@ -170,6 +170,54 @@ app.post('/api/booking/create', async (req, res) => {
   }
 });
 
+// ============================================
+// ABUNDANCE QUIZ ENDPOINT
+// ============================================
+
+// Submit Quiz Response
+app.post('/api/quiz/submit', async (req, res) => {
+  try {
+    const quizData = req.body;
+    
+    console.log('Quiz submission received:', quizData);
+    
+    // Forward to Google Apps Script webhook
+    const webhookUrl = process.env.QUIZ_WEBHOOK_URL;
+    
+    if (!webhookUrl) {
+      throw new Error('Quiz webhook URL not configured');
+    }
+    
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(quizData)
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to save quiz response');
+    }
+    
+    console.log('Quiz response saved to Google Sheets');
+    
+    res.json({
+      success: true,
+      message: 'Quiz response saved successfully',
+      recommendedService: quizData.recommendedService
+    });
+    
+  } catch (error) {
+    console.error('Quiz submission error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to submit quiz'
+    });
+  }
+});
 // Helper Functions
 
 function generateAnalysis(answers) {
